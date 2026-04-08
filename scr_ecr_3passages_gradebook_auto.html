@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCR & ECR Practice – 5th Grade ELA</title>
+<style>
+  :root {
+    --yellow: #FFD700;
+    --blue: #4A90D9;
+    --green: #5CB85C;
+    --pink: #E91E8C;
+    --orange: #FF8C00;
+    --purple: #7B2FBE;
+    --bg: #F4F7FB;
+    --card: #FFFFFF;
+    --border: #D0D8E8;
+    --text: #1A1A2E;
+    --muted: #6B7280;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); font-size: 16px; line-height: 1.7; }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%);
+    color: white; padding: 14px 20px;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  }
+  header h1 { font-size: 1.2rem; }
+  header p { font-size: 0.82rem; opacity: 0.8; margin-top: 2px; }
+  .badge { background: var(--yellow); color: #1A1A2E; padding: 4px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 700; }
+
+  /* ── STUDENT INFO BAR ── */
+  .name-bar {
+    background: #EDE9FF; border-bottom: 2px solid #C4B5FD;
+    padding: 10px 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  }
+  .name-bar label { font-size: 0.84rem; font-weight: 700; color: var(--purple); white-space: nowrap; }
+  .name-bar select {
+    border: 2px solid #C4B5FD; border-radius: 20px; padding: 5px 14px;
+    font-size: 0.88rem; font-family: inherit; outline: none; background: white; cursor: pointer;
+    color: var(--text); min-width: 180px;
+  }
+  .name-bar select:focus { border-color: var(--purple); }
+  .name-bar .save-note { font-size: 0.76rem; color: #6D28D9; }
+
+  /* ── PASSAGE TABS ── */
+  .passage-nav {
+    background: white; border-bottom: 2px solid var(--border);
+    display: flex; gap: 0; padding: 0 16px;
+  }
+  .p-tab {
+    padding: 10px 18px; font-size: 0.84rem; font-weight: 700; cursor: pointer;
+    border-bottom: 3px solid transparent; color: var(--muted); transition: all 0.2s;
+    background: none; border-top: none; border-left: none; border-right: none;
+  }
+  .p-tab:hover { color: var(--purple); }
+  .p-tab.active { color: var(--purple); border-bottom-color: var(--purple); }
+
+  /* ── COLOR LEGEND ── */
+  .legend-bar {
+    background: white; border-bottom: 2px solid var(--border);
+    padding: 8px 18px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 0.8rem;
+  }
+  .legend-bar span { font-weight: 700; color: var(--muted); }
+  .swatch {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 20px; color: white;
+    font-size: 0.78rem; cursor: pointer; border: 2px solid transparent; transition: transform 0.1s;
+  }
+  .swatch:hover { transform: scale(1.05); }
+  .swatch.active { border-color: #333; box-shadow: 0 0 0 2px #333; }
+  .swatch.yellow-hl { background: var(--yellow); color: #333; }
+  .swatch.blue-hl   { background: var(--blue); }
+  .swatch.green-hl  { background: var(--green); }
+  .swatch.pink-hl   { background: var(--pink); }
+  .swatch.orange-hl { background: var(--orange); }
+  .swatch.eraser    { background: #888; }
+
+  /* ── LAYOUT ── */
+  .main { display: flex; min-height: calc(100vh - 170px); }
+  .passage-panel {
+    width: 46%; background: white; border-right: 2px solid var(--border);
+    padding: 20px 18px; overflow-y: auto; position: sticky; top: 0;
+    max-height: calc(100vh - 170px);
+  }
+  .passage-set { display: none; }
+  .passage-set.active { display: block; }
+  .passage-panel h2 { font-size: 1.05rem; color: var(--purple); margin-bottom: 4px; font-weight: 800; }
+  .genre-tag {
+    font-size: 0.73rem; background: #EDE9FF; color: var(--purple);
+    padding: 2px 8px; border-radius: 10px; font-weight: 700; display: inline-block; margin-bottom: 12px;
+  }
+  #passage-text-1, #passage-text-2, #passage-text-3 { font-size: 0.97rem; line-height: 1.85; user-select: text; cursor: text; }
+  .passage-text p { margin-bottom: 11px; }
+  .para-num { color: var(--muted); font-size: 0.76rem; font-weight: 700; margin-right: 5px; }
+  .hl-yellow { background: #FFD700; border-radius: 3px; padding: 0 2px; color: #333; }
+  .hl-blue   { background: #4A90D9; color: white; border-radius: 3px; padding: 0 2px; }
+  .hl-green  { background: #5CB85C; color: white; border-radius: 3px; padding: 0 2px; }
+  .hl-pink   { background: #E91E8C; color: white; border-radius: 3px; padding: 0 2px; }
+  .hl-orange { background: #FF8C00; color: white; border-radius: 3px; padding: 0 2px; }
+
+  /* ── QUESTION PANEL ── */
+  .question-panel { width: 54%; padding: 18px 20px; overflow-y: auto; max-height: calc(100vh - 170px); }
+  .q-set { display: none; }
+  .q-set.active { display: block; }
+
+  /* ── PROGRESS / TABS ── */
+  .progress-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
+  .prog-dot {
+    width: 40px; height: 40px; border-radius: 50%; background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 800; color: var(--muted); transition: all 0.3s; flex-direction: column; gap: 1px;
+  }
+  .prog-dot .dot-label { font-size: 0.58rem; }
+  .prog-dot.done-full { background: #059669; color: white; }
+  .prog-dot.done-partial { background: #D97706; color: white; }
+  .prog-dot.done-low { background: #DC2626; color: white; }
+  .prog-dot.current { background: var(--purple); color: white; }
+
+  .tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab-btn {
+    padding: 7px 16px; border-radius: 20px; border: 2px solid var(--border);
+    background: white; font-size: 0.8rem; font-weight: 700; cursor: pointer;
+    transition: all 0.2s; color: var(--muted);
+  }
+  .tab-btn:hover { border-color: var(--purple); color: var(--purple); }
+  .tab-btn.active { background: var(--purple); color: white; border-color: var(--purple); }
+  .tab-btn .q-type { font-size: 0.66rem; display: block; font-weight: 600; margin-top: 1px; }
+
+  /* ── QUESTION CARD ── */
+  .q-card { background: white; border-radius: 12px; border: 2px solid var(--border); padding: 18px; display: none; animation: fadeIn 0.25s ease; }
+  .q-card.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; } }
+  .q-type-badge { display: inline-block; font-size: 0.7rem; font-weight: 800; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .badge-scr { background: #DBEAFE; color: #1D4ED8; }
+  .badge-ecr { background: #D1FAE5; color: #065F46; }
+  .q-number { font-size: 0.76rem; color: var(--muted); font-weight: 700; margin-bottom: 5px; }
+  .q-stem { font-size: 0.98rem; font-weight: 700; margin-bottom: 12px; color: var(--text); line-height: 1.5; }
+
+  /* ── COLOR HINTS ── */
+  .color-hint {
+    display: flex; align-items: flex-start; gap: 9px;
+    background: #F9FAFB; border: 2px dashed var(--border); border-radius: 10px;
+    padding: 10px 12px; margin-bottom: 10px; font-size: 0.82rem;
+  }
+  .color-hint .dot { width: 15px; height: 15px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+  .color-hint p { line-height: 1.5; }
+  .color-hint strong { display: block; margin-bottom: 1px; }
+
+  /* ── RUBRIC ── */
+  .rubric-reminder {
+    background: #EDE9FF; border: 2px solid #7C3AED; border-radius: 10px;
+    padding: 10px 14px; font-size: 0.8rem; margin-bottom: 12px;
+  }
+  .rubric-reminder h4 { color: var(--purple); font-size: 0.82rem; margin-bottom: 5px; font-weight: 800; }
+  .rubric-reminder .row { display: flex; gap: 7px; margin-bottom: 3px; align-items: flex-start; }
+  .rubric-reminder .pts { font-weight: 800; color: var(--purple); min-width: 22px; }
+
+  /* ── SCAFFOLD ── */
+  .scaffold-box { background: #FFFBEA; border: 2px solid #FCD34D; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+  .scaffold-box h4 { font-size: 0.81rem; color: #92400E; font-weight: 800; margin-bottom: 6px; }
+  .sentence-frame { background: white; border: 1.5px solid #FCD34D; border-radius: 8px; padding: 9px 11px; font-size: 0.86rem; color: #374151; line-height: 1.7; margin-top: 6px; }
+  .sentence-frame span.blank { display: inline-block; border-bottom: 2px solid #D97706; min-width: 100px; margin: 0 3px; color: #D97706; font-style: italic; }
+
+  /* ── TEXTAREA ── */
+  .ecr-part-label { font-size: 0.78rem; font-weight: 800; color: var(--muted); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.4px; display: block; }
+  .ecr-parts { display: flex; flex-direction: column; gap: 9px; margin-bottom: 9px; }
+  .response-area { width: 100%; border: 2px solid var(--border); border-radius: 10px; padding: 10px; font-size: 0.93rem; font-family: inherit; resize: vertical; min-height: 100px; margin-bottom: 4px; transition: border-color 0.2s; line-height: 1.6; }
+  .response-area:focus { outline: none; border-color: var(--purple); }
+  .char-counter { font-size: 0.73rem; color: var(--muted); text-align: right; margin-bottom: 10px; }
+
+  /* ── BUTTONS ── */
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .btn { padding: 9px 18px; border-radius: 24px; font-size: 0.86rem; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; }
+  .btn-submit { background: var(--purple); color: white; }
+  .btn-submit:hover { background: #6921AA; }
+  .btn-hint { background: #FEF3C7; color: #92400E; border: 2px solid #FCD34D; }
+  .btn-hint:hover { background: #FDE68A; }
+  .btn-reset { background: #F3F4F6; color: var(--muted); border: 2px solid var(--border); }
+  .btn-reset:hover { background: #E5E7EB; }
+
+  /* ── FEEDBACK ── */
+  .feedback-box { display: none; border-radius: 10px; padding: 12px 14px; margin-top: 12px; font-size: 0.86rem; line-height: 1.6; animation: fadeIn 0.3s ease; }
+  .feedback-box.score-full { background: #D1FAE5; border: 2px solid #059669; }
+  .feedback-box.score-partial { background: #FEF3C7; border: 2px solid #D97706; }
+  .feedback-box.score-low { background: #FEE2E2; border: 2px solid #DC2626; }
+  .score-pill { display: inline-block; font-size: 0.78rem; font-weight: 800; padding: 3px 10px; border-radius: 20px; margin-bottom: 7px; }
+  .score-full .score-pill { background: #059669; color: white; }
+  .score-partial .score-pill { background: #D97706; color: white; }
+  .score-low .score-pill { background: #DC2626; color: white; }
+  .feedback-box ul { padding-left: 16px; margin-top: 5px; }
+  .feedback-box ul li { margin-bottom: 3px; }
+
+  /* ── SUBMIT ALL / GRADEBOOK ── */
+  .submit-all-bar {
+    background: #1A1A2E; padding: 14px 22px;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  }
+  .submit-all-bar p { color: #C4B5FD; font-size: 0.84rem; flex: 1; }
+  .btn-submit-all { background: var(--yellow); color: #1A1A2E; padding: 10px 24px; border-radius: 24px; font-size: 0.9rem; font-weight: 800; cursor: pointer; border: none; }
+  .btn-submit-all:hover { background: #EAC200; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1000; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white; border-radius: 14px; padding: 28px 26px;
+    max-width: 520px; width: 92%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: fadeIn 0.3s ease;
+  }
+  .modal h3 { font-size: 1.1rem; margin-bottom: 12px; color: var(--purple); }
+  .modal p { font-size: 0.88rem; line-height: 1.6; margin-bottom: 10px; color: var(--text); }
+  .modal .url-input { width: 100%; border: 2px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 0.85rem; font-family: inherit; margin-bottom: 12px; }
+  .modal .btn-row { justify-content: flex-end; }
+  .modal .btn-cancel { background: #F3F4F6; color: var(--muted); border: 2px solid var(--border); }
+  .modal .btn-go { background: var(--purple); color: white; }
+  .success-msg { display: none; background: #D1FAE5; border: 2px solid #059669; border-radius: 10px; padding: 12px 16px; font-size: 0.88rem; color: #065F46; margin-top: 10px; }
+
+  @media (max-width: 700px) {
+    .main { flex-direction: column; }
+    .passage-panel { width: 100%; max-height: 300px; position: static; }
+    .question-panel { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div>
+    <h1>✏️ SCR & ECR Writing Practice — 3 Passages</h1>
+    <p>5th Grade ELA · STAAR Aligned · Highlighting resets with each question for a clean slate</p>
+  </div>
+  <span class="badge">TEA Rubric + Gradebook</span>
+</header>
+
+<!-- STUDENT INFO -->
+<div class="name-bar">
+  <label for="classSelect">🏫 My Class:</label>
+  <select id="classSelect" onchange="updateNameList()">
+    <option value="">— Select your class —</option>
+    <option value="Claudio">Mrs. Claudio's Class</option>
+    <option value="Chavez">Ms. Chavez's Class</option>
+  </select>
+  <label for="studentName">👤 My Name:</label>
+  <select id="studentName">
+    <option value="">— Select your class first —</option>
+  </select>
+  <span class="save-note">📊 Your answers will be saved to the teacher gradebook when you click "Submit to Gradebook"</span>
+</div>
+
+<!-- PASSAGE NAVIGATION -->
+<div class="passage-nav">
+  <button class="p-tab active" onclick="switchPassage(1)" id="ptab-1">📖 Passage 1 – The Lighthouse</button>
+  <button class="p-tab" onclick="switchPassage(2)" id="ptab-2">🌿 Passage 2 – The Seed Scientist</button>
+  <button class="p-tab" onclick="switchPassage(3)" id="ptab-3">🎵 Passage 3 – The Last Note</button>
+</div>
+
+<!-- COLOR LEGEND -->
+<div class="legend-bar">
+  <span>🎨 Highlight:</span>
+  <div class="swatch yellow-hl" onclick="setColor('yellow')" id="sw-yellow">🟡 Main Idea</div>
+  <div class="swatch blue-hl"   onclick="setColor('blue')"   id="sw-blue">🔵 Evidence #1</div>
+  <div class="swatch green-hl"  onclick="setColor('green')"  id="sw-green">🟢 Evidence #2</div>
+  <div class="swatch pink-hl"   onclick="setColor('pink')"   id="sw-pink">🩷 Feeling/Character</div>
+  <div class="swatch orange-hl" onclick="setColor('orange')" id="sw-orange">🟠 Author's Words</div>
+  <div class="swatch eraser"    onclick="setColor('erase')"  id="sw-erase">⬜ Eraser</div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="main">
+
+  <!-- ══════════ LEFT: PASSAGES ══════════ -->
+  <div class="passage-panel">
+
+    <!-- PASSAGE 1 -->
+    <div class="passage-set active" id="pset-1">
+      <h2>The Lighthouse Keeper's Last Summer</h2>
+      <span class="genre-tag">📖 Literary Fiction</span>
+      <div class="passage-text" id="passage-text-1">
+        <p><span class="para-num">[1]</span>Every summer, twelve-year-old Maya climbed the 97 steps of Pelican Point Lighthouse before breakfast. She counted every single one. Her grandfather, Captain Ruiz, had kept the light burning for thirty-one years, and this summer he had finally agreed to let Maya help.</p>
+        <p><span class="para-num">[2]</span>The old lighthouse smelled like motor oil and salt water. The walls were covered in pencil marks — every storm Captain Ruiz had weathered, every ship he had guided safely past the rocks. "Each mark is a life kept safe," he told Maya one morning, tracing a faded line near the window. Maya pressed her finger against the marks, imagining the families on those ships who never knew how close danger had come.</p>
+        <p><span class="para-num">[3]</span>In June, the county sent a letter. Automation was coming — a computer would replace Captain Ruiz by September. Maya watched her grandfather read the letter twice, fold it carefully, and place it in his desk drawer without a word. That night, she noticed he climbed the 97 steps three times instead of once.</p>
+        <p><span class="para-num">[4]</span>Maya decided she would not let his last summer be a sad one. She began keeping her own journal of the lighthouse — sketching the beam of light as it swept across dark water, recording the names of passing ships, writing down every story her grandfather told. "You're doing what I always should have done," he said one afternoon, watching her fill another page. His voice was quiet but warm, like sunlight through thick glass.</p>
+        <p><span class="para-num">[5]</span>"Who will care about this place when you're gone?" Maya asked one evening as the sun melted into the sea. Captain Ruiz was quiet for a long moment. Then he said, "Anyone who reads your journal." Maya looked down at her notebook. For the first time all summer, she didn't feel like something was ending. She felt like something was just beginning.</p>
+        <p><span class="para-num">[6]</span>On the last day of August, Maya climbed the 97 steps alone. She counted every one out loud. At the top, she opened her journal to a blank page and wrote the date. Below it, she drew the horizon — steady, wide, and full of light.</p>
+      </div>
+    </div>
+
+    <!-- PASSAGE 2 -->
+    <div class="passage-set" id="pset-2">
+      <h2>The Seed Scientist</h2>
+      <span class="genre-tag">🌿 Informational / Biography</span>
+      <div class="passage-text" id="passage-text-2">
+        <p><span class="para-num">[1]</span>When Dr. Yara Osei was nine years old, she planted a mango seed in a cracked clay pot on her family's rooftop in Accra, Ghana. Her neighbors said nothing would grow there — the soil was too thin and the sun too harsh. Six weeks later, a small green shoot pushed through the dirt. That moment, Yara later said, changed everything.</p>
+        <p><span class="para-num">[2]</span>Today, Dr. Osei is one of the world's leading seed scientists. She studies how plants can survive in difficult conditions — places with too little water, extreme heat, or damaged soil. Her research has helped communities across three continents grow food in areas once considered hopeless for farming.</p>
+        <p><span class="para-num">[3]</span>Growing up, Yara watched droughts shrink her family's small garden every dry season. While other children played outside after school, she read agriculture books borrowed from the village library. She was not driven by competition. She was driven by a question: <em>Why do some seeds survive when others cannot?</em></p>
+        <p><span class="para-num">[4]</span>That question took her from Accra to a university in London and eventually to research stations in Brazil, India, and Kenya. In each place, she collected seeds from plants that had somehow survived floods, fires, or years of drought. She called these plants "quiet survivors." In her laboratory, she studied their DNA for clues about resilience.</p>
+        <p><span class="para-num">[5]</span>"Seeds don't know they're supposed to fail," Dr. Osei once told a group of students. "They just keep trying." She smiled and added, "So do I." Her latest project involves developing a drought-resistant grain that could feed millions of people in areas threatened by climate change.</p>
+        <p><span class="para-num">[6]</span>The cracked clay pot from her rooftop still sits in her laboratory in London, next to a photo of a young girl in Ghana smiling at a single green shoot. Dr. Osei keeps it there to remind herself — and her students — that important work often begins with something small, stubborn, and full of possibility.</p>
+      </div>
+    </div>
+
+    <!-- PASSAGE 3 -->
+    <div class="passage-set" id="pset-3">
+      <h2>The Last Note</h2>
+      <span class="genre-tag">🎵 Literary Fiction</span>
+      <div class="passage-text" id="passage-text-3">
+        <p><span class="para-num">[1]</span>The morning of the spring concert, eleven-year-old Theo sat on the gym floor with his violin case in his lap and refused to open it. Around him, other students tuned their instruments and whispered excitedly. Theo stared at his shoelaces.</p>
+        <p><span class="para-num">[2]</span>Three weeks ago, everything had been fine. Then he had played one wrong note during rehearsal — a sharp, squealing sound that made the entire fifth grade wince. Since then, his bow felt like a stranger in his hand. At home, he practiced in silence with no bow at all, only moving his fingers across the strings, too afraid of the noise.</p>
+        <p><span class="para-num">[3]</span>His music teacher, Ms. Farrow, sat down beside him on the floor. She didn't say anything at first. She just listened to the noise in the gym — the tuning, the nervous laughter, the shuffle of feet. Then she said quietly, "Every musician I know has a worst note. The ones who keep playing aren't the ones who never mess up. They're the ones who don't let one note become the whole song."</p>
+        <p><span class="para-num">[4]</span>Theo didn't answer, but he felt something shift inside his chest. It wasn't confidence, exactly. It was something smaller — a tiny, uncomfortable willingness to try.</p>
+        <p><span class="para-num">[5]</span>That afternoon, he stood with the others under the gym lights. When his section began, his hands were shaking. He lifted his bow. He played. There were no wrong notes — but even if there had been, he told himself, it wouldn't be the whole song.</p>
+        <p><span class="para-num">[6]</span>Afterward, Ms. Farrow found him near the bleachers. "How do you feel?" she asked. Theo thought about it for a moment. "Like I played all the notes," he said. Then he smiled. "Even the scary ones."</p>
+      </div>
+    </div>
+
+  </div><!-- end passage-panel -->
+
+  <!-- ══════════ RIGHT: QUESTIONS ══════════ -->
+  <div class="question-panel">
+
+    <!-- ─────── PASSAGE 1 QUESTIONS ─────── -->
+    <div class="q-set active" id="qset-1">
+      <div class="progress-row">
+        <div class="prog-dot current" id="dot-1-1"><span>Q1</span><span class="dot-label">SCR</span></div>
+        <div class="prog-dot" id="dot-1-2"><span>Q2</span><span class="dot-label">ECR</span></div>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showQ('1',1)" id="tab-1-1">Question 1 <span class="q-type">SCR · 0–2 pts</span></button>
+        <button class="tab-btn" onclick="showQ('1',2)" id="tab-1-2">Question 2 <span class="q-type">ECR · 0–4 pts</span></button>
+      </div>
+
+      <!-- P1 Q1 SCR -->
+      <div class="q-card active" id="card-1-1">
+        <span class="q-type-badge badge-scr">SCR – Short Constructed Response</span>
+        <div class="q-number">Passage 1 · Question 1 of 2</div>
+        <div class="q-stem">How does Maya respond to the news that her grandfather's job is ending? Use evidence from the text to support your answer.</div>
+        <div class="color-hint"><div class="dot" style="background:#FFD700;"></div><p><strong>🟡 Highlight YELLOW:</strong> Find Maya's main reaction or feeling in paragraphs 3–5.</p></div>
+        <div class="color-hint"><div class="dot" style="background:#4A90D9;"></div><p><strong>🔵 Highlight BLUE:</strong> Find ONE sentence that shows what Maya <em>does</em> because of her feelings — that's your evidence.</p></div>
+        <div class="rubric-reminder">
+          <h4>📋 TEA Rubric — SCR</h4>
+          <div class="row"><span class="pts">2 pts</span> Clear answer + text evidence that supports it</div>
+          <div class="row"><span class="pts">1 pt</span> Answer is there but evidence is missing, OR evidence is there but answer is unclear</div>
+          <div class="row"><span class="pts">0 pts</span> Does not answer the question</div>
+        </div>
+        <div class="scaffold-box">
+          <h4>✏️ Sentence Frame Helper</h4>
+          <div class="sentence-frame">When Maya learns her grandfather's job is ending, she <span class="blank">feels / decides to…</span>. In the text it says, "<span class="blank">your evidence here</span>." This shows that Maya <span class="blank">explain what it means</span>.</div>
+        </div>
+        <label class="ecr-part-label">Your Answer:</label>
+        <textarea class="response-area" id="r-1-1" placeholder="Write your answer here… State your answer AND include text evidence!" oninput="countChars('r-1-1','cc-1-1')"></textarea>
+        <div class="char-counter" id="cc-1-1">0 characters</div>
+        <div class="btn-row">
+          <button class="btn btn-submit" onclick="scoreQ('1',1)">Submit ✅</button>
+          <button class="btn btn-hint" onclick="toggleHint('1-1')">💡 Hint</button>
+          <button class="btn btn-reset" onclick="resetQ('1',1)">🔄 Try Again</button>
+        </div>
+        <div id="hint-1-1" style="display:none;margin-top:10px;background:#FFF7ED;border:2px dashed #FB923C;border-radius:10px;padding:11px;font-size:0.84rem;"><strong>💡 Hint:</strong> Look at paragraph 4. What does Maya <em>start doing</em> to make her grandfather's last summer special? That action is your answer. The sentence that shows her doing it is your evidence!</div>
+        <div class="feedback-box" id="fb-1-1"></div>
+      </div>
+
+      <!-- P1 Q2 ECR -->
+      <div class="q-card" id="card-1-2">
+        <span class="q-type-badge badge-ecr">ECR – Extended Constructed Response</span>
+        <div class="q-number">Passage 1 · Question 2 of 2</div>
+        <div class="q-stem">What is the theme of "The Lighthouse Keeper's Last Summer"? Use <strong>two pieces of evidence</strong> from <strong>different parts</strong> of the story to support your answer.</div>
+        <div class="color-hint"><div class="dot" style="background:#FFD700;"></div><p><strong>🟡 YELLOW:</strong> Where do you first see the theme? Highlight a spot in paragraphs 1–3.</p></div>
+        <div class="color-hint"><div class="dot" style="background:#4A90D9;"></div><p><strong>🔵 BLUE = Evidence #1</strong> — Find a sentence from paragraphs 1–3 that connects to your theme.</p></div>
+        <div class="color-hint"><div class="dot" style="background:#5CB85C;"></div><p><strong>🟢 GREEN = Evidence #2</strong> — Find a sentence from paragraphs 4–6 that also connects to your theme.</p></div>
+        <div class="rubric-reminder">
+          <h4>📋 TEA Rubric — ECR</h4>
+          <div class="row"><span class="pts">4 pts</span> Clear theme + 2 evidence pieces + explanation of BOTH</div>
+          <div class="row"><span class="pts">3 pts</span> Clear theme + 2 evidence pieces, but one explanation is weak</div>
+          <div class="row"><span class="pts">2 pts</span> Theme stated + only 1 piece of evidence</div>
+          <div class="row"><span class="pts">1 pt</span> Evidence but theme not clearly stated</div>
+          <div class="row"><span class="pts">0 pts</span> Does not respond</div>
+        </div>
+        <div class="scaffold-box">
+          <h4>✏️ ECR Frame</h4>
+          <div class="sentence-frame">The theme of this story is <span class="blank">life message</span>. One way the author shows this is when <span class="blank">🔵 evidence #1</span>. This shows the theme because <span class="blank">explain</span>. Another way is when <span class="blank">🟢 evidence #2</span>. This also shows the theme because <span class="blank">explain</span>.</div>
+        </div>
+        <div class="ecr-parts">
+          <div><span class="ecr-part-label">🟡 Part 1 – State Your Theme</span>
+            <textarea class="response-area" id="r-1-2a" placeholder="The theme of this story is…" style="min-height:70px;" oninput="countChars('r-1-2a','cc-1-2a')"></textarea>
+            <div class="char-counter" id="cc-1-2a">0 characters</div>
+          </div>
+          <div><span class="ecr-part-label">🔵 Part 2 – Evidence #1 + Explanation</span>
+            <textarea class="response-area" id="r-1-2b" placeholder="One way the author shows this is… This connects to the theme because…" style="min-height:85px;" oninput="countChars('r-1-2b','cc-1-2b')"></textarea>
+            <div class="char-counter" id="cc-1-2b">0 characters</div>
+          </div>
+          <div><span class="ecr-part-label">🟢 Part 3 – Evidence #2 + Explanation</span>
+            <textarea class="response-area" id="r-1-2c" placeholder="Another way the author shows this is… This also shows the theme because…" style="min-height:85px;" oninput="countChars('r-1-2c','cc-1-2c')"></textarea>
+            <div class="char-counter" id="cc-1-2c">0 characters</div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-submit" onclick="scoreQ('1',2)">Submit ✅</button>
+          <button class="btn btn-hint" onclick="toggleHint('1-2')">💡 Hint</button>
+          <button class="btn btn-reset" onclick="resetQ('1',2)">🔄 Try Again</button>
+        </div>
+        <div id="hint-1-2" style="display:none;margin-top:10px;background:#FFF7ED;border:2px dashed #FB923C;border-radius:10px;padding:11px;font-size:0.84rem;"><strong>💡 Hint – Theme Ideas:</strong> Think about what message the author wants ALL readers to learn. Consider: <em>Memories preserve what we love. Loss can lead to something new. Love is shown through actions.</em> Then find two places in the story that show that message.</div>
+        <div class="feedback-box" id="fb-1-2"></div>
+      </div>
+    </div><!-- end qset-1 -->
+
+    <!-- ─────── PASSAGE 2 QUESTIONS ─────── -->
+    <div class="q-set" id="qset-2">
+      <div class="progress-row">
+        <div class="prog-dot current" id="dot-2-1"><span>Q1</span><span class="dot-label">SCR</span></div>
+        <div class="prog-dot" id="dot-2-2"><span>Q2</span><span class="dot-label">ECR</span></div>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showQ('2',1)" id="tab-2-1">Question 1 <span class="q-type">SCR · 0–2 pts</span></button>
+        <button class="tab-btn" onclick="showQ('2',2)" id="tab-2-2">Question 2 <span class="q-type">ECR · 0–4 pts</span></button>
+      </div>
+
+      <!-- P2 Q1 SCR -->
+      <div class="q-card active" id="card-2-1">
+        <span class="q-type-badge badge-scr">SCR – Short Constructed Response</span>
+        <div class="q-number">Passage 2 · Question 1 of 2</div>
+        <div class="q-stem">What motivated Dr. Yara Osei to become a seed scientist? Use evidence from the text to support your answer.</div>
+        <div class="color-hint"><div class="dot" style="background:#FFD700;"></div><p><strong>🟡 YELLOW:</strong> Find the sentence that tells you WHAT motivated her. Look in paragraphs 1 and 3.</p></div>
+        <div class="color-hint"><div class="dot" style="background:#4A90D9;"></div><p><strong>🔵 BLUE:</strong> Find ONE sentence from the text as evidence. Her own words in paragraph 3 or 5 work great!</p></div>
+        <div class="rubric-reminder">
+          <h4>📋 TEA Rubric — SCR</h4>
+          <div class="row"><span class="pts">2 pts</span> Clear answer + text evidence that supports it</div>
+          <div class="row"><span class="pts">1 pt</span> Answer present but evidence missing, OR evidence present but answer is unclear</div>
+          <div class="row"><span class="pts">0 pts</span> Does not answer the question</div>
+        </div>
+        <div class="scaffold-box">
+          <h4>✏️ Sentence Frame Helper</h4>
+          <div class="sentence-frame">Dr. Osei was motivated by <span class="blank">what drove her</span>. The text shows this when <span class="blank">evidence from the passage</span>. This tells the reader that <span class="blank">explain why it matters</span>.</div>
+        </div>
+        <label class="ecr-part-label">Your Answer:</label>
+        <textarea class="response-area" id="r-2-1" placeholder="Write your answer here…" oninput="countChars('r-2-1','cc-2-1')"></textarea>
+        <div class="char-counter" id="cc-2-1">0 characters</div>
+        <div class="btn-row">
+          <button class="btn btn-submit" onclick="scoreQ('2',1)">Submit ✅</button>
+          <button class="btn btn-hint" onclick="toggleHint('2-1')">💡 Hint</button>
+          <button class="btn btn-reset" onclick="resetQ('2',1)">🔄 Try Again</button>
+        </div>
+        <div id="hint-2-1" style="display:none;margin-top:10px;background:#FFF7ED;border:2px dashed #FB923C;border-radius:10px;padding:11px;font-size:0.84rem;"><strong>💡 Hint:</strong> In paragraph 3, the author tells us she was NOT driven by competition. So what WAS she driven by? Look for the question she kept asking herself — that question became her motivation!</div>
+        <div class="feedback-box" id="fb-2-1"></div>
+      </div>
+
+      <!-- P2 Q2 ECR -->
+      <div class="q-card" id="card-2-2">
+        <span class="q-type-badge badge-ecr">ECR – Extended Constructed Response</span>
+        <div class="q-number">Passage 2 · Question 2 of 2</div>
+        <div class="q-stem">How does Dr. Osei's childhood experience connect to her work as a scientist? Use <strong>two pieces of evidence</strong> from different parts of the text to explain this connection.</div>
+        <div class="color-hint"><div class="dot" style="background:#4A90D9;"></div><p><strong>🔵 BLUE = Childhood Evidence</strong> — Find evidence from paragraphs 1–3 about what she experienced as a child.</p></div>
+        <div class="color-hint"><div class="dot" style="background:#5CB85C;"></div><p><strong>🟢 GREEN = Adult/Scientist Evidence</strong> — Find evidence from paragraphs 4–6 about her work as a scientist.</p></div>
+        <div class="color-hint"><div class="dot" style="background:#FF8C00;"></div><p><strong>🟠 ORANGE:</strong> Highlight the sentence at the end of paragraph 6 — it directly connects her childhood to her work!</p></div>
+        <div class="rubric-reminder">
+          <h4>📋 TEA Rubric — ECR</h4>
+          <div class="row"><span class="pts">4 pts</span> Clear connection + 2 evidence pieces + explanation of BOTH</div>
+          <div class="row"><span class="pts">3 pts</span> Clear connection + 2 evidence pieces, one explanation weak</div>
+          <div class="row"><span class="pts">2 pts</span> Connection stated + only 1 piece of evidence</div>
+          <div class="row"><span class="pts">1 pt</span> Evidence but connection not clearly explained</div>
+          <div class="row"><span class="pts">0 pts</span> Does not respond</div>
+        </div>
+        <div class="scaffold-box">
+          <h4>✏️ ECR Frame</h4>
+          <div class="sentence-frame">Dr. Osei's childhood experience connects to her work because <span class="blank">explain the link</span>. As a child, <span class="blank">🔵 evidence #1</span>. This connects because <span class="blank">explain</span>. As a scientist, <span class="blank">🟢 evidence #2</span>. This shows the connection because <span class="blank">explain</span>.</div>
+        </div>
+        <div class="ecr-parts">
+          <div><span class="ecr-part-label">Part 1 – Explain the Connection</span>
+            <textarea class="response-area" id="r-2-2a" placeholder="Dr. Osei's childhood connects to her work because…" style="min-height:70px;" oninput="countChars('r-2-2a','cc-2-2a')"></textarea>
+            <div class="char-counter" id="cc-2-2a">0 characters</div>
+          </div>
+          <div><span class="ecr-part-label">🔵 Part 2 – Childhood Evidence + Explanation</span>
+            <textarea class="response-area" id="r-2-2b" placeholder="As a child… The text says… This connects because…" style="min-height:85px;" oninput="countChars('r-2-2b','cc-2-2b')"></textarea>
+            <div class="char-counter" id="cc-2-2b">0 characters</div>
+          </div>
+          <div><span class="ecr-part-label">🟢 Part 3 – Scientist Evidence + Explanation</span>
+            <textarea class="response-area" id="r-2-2c" placeholder="As a scientist… The text says… This shows the connection because…" style="min-height:85px;" oninput="countChars('r-2-2c','cc-2-2c')"></textarea>
+            <div class="char-counter" id="cc-2-2c">0 characters</div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-submit" onclick="scoreQ('2',2)">Submit ✅</button>
+          <button class="btn btn-hint" onclick="toggleHint('2-2')">💡 Hint</button>
+          <button class="btn btn-reset" onclick="resetQ('2',2)">🔄 Try Again</button>
+        </div>
+        <div id="hint-2-2" style="display:none;margin-top:10px;background:#FFF7ED;border:2px dashed #FB923C;border-radius:10px;padding:11px;font-size:0.84rem;"><strong>💡 Hint:</strong> As a child she grew a mango seed when people said it couldn't grow. As a scientist she studies plants that survive when people thought they couldn't. The connection is about <em>not giving up on things others think are impossible</em>. The last sentence in paragraph 6 basically says this directly!</div>
+        <div class="feedback-box" id="fb-2-2"></div>
+      </div>
+    </div><!-- end qset-2 -->
+
+    <!-- ─────── PASSAGE 3 QUESTIONS ─────── -->
+    <div class="q-set" id="qset-3">
+      <div class="progress-row">
+        <div class="prog-dot current" id="dot-3-1"><span>Q1</span><span class="dot-label">SCR</span></div>
+        <div class="prog-dot" id="dot-3-2"><span>Q2</span><span class="dot-label">ECR</span></div>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showQ('3',1)" id="tab-3-1">Question 1 <span class="q-type">SCR · 0–2 pts</span></button>
+        <button class="tab-btn" onclick="showQ('3',2)" id="tab-3-2">Question 2 <span class="q-type">ECR · 0–4 pts</span></button>
+      </div>
+
+      <!-- P3 Q1 SCR -->
+      <div class="q-card active" id="card-3-1">
+        <span class="q-type-badge badge-scr">SCR – Short Constructed Response</span>
+        <div class="q-number">Passage 3 · Question 1 of 2</div>
+        <div class="q-stem">How does Ms. Farrow help Theo face his fear of playing? Use evidence from the text to support your answer.</div>
+        <div class="color-hint"><div class="dot" style="background:#FFD700;"></div><p><strong>🟡 YELLOW:</strong> Find what Ms. Farrow actually DOES or SAYS to help Theo. Look in paragraph 3.</p></div>
+        <div class="color-hint"><div class="dot" style="background:#E91E8C;"></div><p><strong>🩷 PINK:</strong> Highlight how Theo FEELS after Ms. Farrow talks to him. Find it in paragraph 4.</p></div>
+        <div class="rubric-reminder">
+          <h4>📋 TEA Rubric — SCR</h4>
+          <div class="row"><span class="pts">2 pts</span> Clear answer + text evidence that supports it</div>
+          <div class="row"><span class="pts">1 pt</span> Answer present but evidence weak or missing</div>
+          <div class="row"><span class="pts">0 pts</span> Does not answer the question</div>
+        </div>
+        <div class="scaffold-box">
+          <h4>✏️ Sentence Frame Helper</h4>
+          <div class="sentence-frame">Ms. Farrow helps Theo by <span class="blank">what she does/says</span>. In the text it says, "<span class="blank">evidence from the text</span>." This helps Theo because <span class="blank">explain the effect</span>.</div>
+        </div>
+        <label class="ecr-part-label">Your Answer:</label>
+        <textarea class="response-area" id="r-3-1" placeholder="Write your answer here…" oninput="countChars('r-3-1','cc-3-1')"></textarea>
+        <div class="char-counter" id="cc-3-1">0 characters</div>
+        <div class="btn-row">
+          <button class="btn btn-submit" onclick="scoreQ('3',1)">Submit ✅</button>
+          <button class="btn btn-hint" onclick="toggleHint('3-1')">💡 Hint</button>
+          <button class="btn btn-reset" onclick="resetQ('3',1)">🔄 Try Again</button>
+        </div>
+        <div id="hint-3-1" style="display:none;margin-top:10px;background:#FFF7ED;border:2px dashed #FB923C;border-radius:10px;padding:11px;font-size:0.84rem;"><strong>💡 Hint:</strong> In paragraph 3, Ms. Farrow tells Theo something important about making mistakes. Copy her exact words as your evidence. Then explain how what she said changed how Theo felt.</div>
+        <div class="feedback-box" id="fb-3-1"></div>
+      </div>
+
+      <!-- P3 Q2 ECR -->
+      <div class="q-card" id="card-3-2">
+        <span class="q-type-badge badge-ecr">ECR – Extended Constructed Response</span>
+        <div class="q-number">Passage 3 · Question 2 of 2</div>
+        <div class="q-stem">How does Theo change from the beginning to the end of the story? Use <strong>two pieces of evidence</strong> from different parts of the story to show this change.</div>
+        <div class="color-hint"><div class="dot" style="background:#4A90D9;"></div><p><strong>🔵 BLUE = Theo at the BEGINNING</strong> — How does he feel in paragraphs 1–2? Find evidence.</p></div>
+        <div class="color-hint"><div class="dot" style="background:#5CB85C;"></div><p><strong>🟢 GREEN = Theo at the END</strong> — How is he different in paragraphs 5–6? Find evidence.</p></div>
+        <div class="color-hint"><div class="dot" style="background:#FF8C00;"></div><p><strong>🟠 ORANGE:</strong> Highlight Theo's final words in paragraph 6 — they perfectly show his change!</p></div>
+        <div class="rubric-reminder">
+          <h4>📋 TEA Rubric — ECR</h4>
+          <div class="row"><span class="pts">4 pts</span> Clear change described + 2 evidence pieces + explanation of BOTH</div>
+          <div class="row"><span class="pts">3 pts</span> Clear change + 2 evidence pieces, one explanation weak</div>
+          <div class="row"><span class="pts">2 pts</span> Change stated + only 1 piece of evidence</div>
+          <div class="row"><span class="pts">1 pt</span> Evidence but no clear change described</div>
+          <div class="row"><span class="pts">0 pts</span> Does not respond</div>
+        </div>
+        <div class="scaffold-box">
+          <h4>✏️ ECR Frame</h4>
+          <div class="sentence-frame">At the beginning, Theo <span class="blank">how he feels/acts</span>. The text shows this when <span class="blank">🔵 evidence</span>. This shows that <span class="blank">explain</span>. By the end, Theo <span class="blank">how he is different</span>. The text shows this when <span class="blank">🟢 evidence</span>. This shows his change because <span class="blank">explain</span>.</div>
+        </div>
+        <div class="ecr-parts">
+          <div><span class="ecr-part-label">🔵 Part 1 – Theo at the Beginning + Evidence</span>
+            <textarea class="response-area" id="r-3-2a" placeholder="At the beginning, Theo… The text shows this when…" style="min-height:85px;" oninput="countChars('r-3-2a','cc-3-2a')"></textarea>
+            <div class="char-counter" id="cc-3-2a">0 characters</div>
+          </div>
+          <div><span class="ecr-part-label">🟢 Part 2 – Theo at the End + Evidence</span>
+            <textarea class="response-area" id="r-3-2b" placeholder="By the end, Theo… The text shows this when…" style="min-height:85px;" oninput="countChars('r-3-2b','cc-3-2b')"></textarea>
+            <div class="char-counter" id="cc-3-2b">0 characters</div>
+          </div>
+          <div><span class="ecr-part-label">🟠 Part 3 – Explain the Change</span>
+            <textarea class="response-area" id="r-3-2c" placeholder="Theo changed because… This change matters because…" style="min-height:70px;" oninput="countChars('r-3-2c','cc-3-2c')"></textarea>
+            <div class="char-counter" id="cc-3-2c">0 characters</div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-submit" onclick="scoreQ('3',2)">Submit ✅</button>
+          <button class="btn btn-hint" onclick="toggleHint('3-2')">💡 Hint</button>
+          <button class="btn btn-reset" onclick="resetQ('3',2)">🔄 Try Again</button>
+        </div>
+        <div id="hint-3-2" style="display:none;margin-top:10px;background:#FFF7ED;border:2px dashed #FB923C;border-radius:10px;padding:11px;font-size:0.84rem;"><strong>💡 Hint:</strong> At the beginning, Theo won't even open his violin case (paragraph 1). He practices without his bow because he's afraid. At the end, he plays in the concert AND says "Even the scary ones." That final quote is perfect GREEN evidence of his change!</div>
+        <div class="feedback-box" id="fb-3-2"></div>
+      </div>
+    </div><!-- end qset-3 -->
+
+  </div><!-- end question-panel -->
+</div><!-- end main -->
+
+<!-- SUBMIT TO GRADEBOOK BAR -->
+<div class="submit-all-bar">
+  <p>📊 Finished all your answers? Click to save your scores and responses to the teacher gradebook.</p>
+  <button class="btn-submit-all" onclick="openSubmitModal()">📤 Submit to Gradebook</button>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>📤 Submit to Teacher Gradebook</h3>
+    <p>Your name, scores, and written responses will be sent directly to your teacher's gradebook. Make sure you have selected your class and name before submitting!</p>
+    <div id="submitSuccess" class="success-msg">✅ Submitted! Your teacher can now see your scores and responses. Great work today!</div>
+    <div class="btn-row" style="margin-top:8px;">
+      <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-go" onclick="submitToSheets()">Send My Results 🚀</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  ROSTERS
+// ══════════════════════════════════════════
+const rosters = {
+  Claudio: [
+    'Aguilar, Aylin','Alonzo, Justin','Arroyo, Madison','Briseno, Malerie',
+    'Brown, Jamar','Cavazos, Mauricio','Cruz, Mylah','Flores, Carolina',
+    'Flores, Diego','Gomez, Anna','Gutierrez, Raelynn','Jacinto, Alyana',
+    'Moreno, Gabriel','Nlemchy, Stephanie','Onkonburi, Penadchara',
+    'Ornelas Nunez, Zendaya','Pena, Jessenia','Perez, Ethan','Perez, Romina',
+    'Rodriguez, Hailee','Rosales, Casey','Ruiz, Harlee','Santana Zuniga, Vianka',
+    'Torres, Miyaly','Trejo Bautista, Ashley','Velazquez, Christian',
+    'Veloz, Alin','Wilson, Queen'
+  ],
+  Chavez: [
+    'Adame, Kamila','Avalos, Jesus','Ballesteros, Jett','Boyd, Zayden',
+    'Buenrostro, Adalynn','Cordova, Cesar','Del Angel Tapia, Ismael',
+    'Diaz, Adrianne','Diaz, Jacob','Estell, Brianne Mae','Farela, Hunter',
+    'Garay Melo, Ainara','Garza, D\'Anthony','Gutierrez, Isabella',
+    'Hinojosa, Yahel','Lozano, Violett','Mares, Lydianna','Medina, Dylan',
+    'Munoz Paz, Adriana','Ortega, Kaiden','Pastrana, Arabella','Ramos, Roman',
+    'Resendez, Edwin','Reta, Rainnie','Rico, Diego','Rodriguez Zayas, Sahir',
+    'Rojas, Albert','Russell, Helena'
+  ]
+};
+
+function updateNameList() {
+  const cls = document.getElementById('classSelect').value;
+  const sel = document.getElementById('studentName');
+  sel.innerHTML = '';
+  if (!cls) {
+    sel.innerHTML = '<option value="">— Select your class first —</option>';
+    return;
+  }
+  sel.innerHTML = '<option value="">— Select your name —</option>';
+  rosters[cls].forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name;
+    sel.appendChild(opt);
+  });
+}
+
+// ══════════════════════════════════════════
+//  DATA STORAGE
+// ══════════════════════════════════════════
+const scores = {
+  '1-1': null, '1-2': null,
+  '2-1': null, '2-2': null,
+  '3-1': null, '3-2': null
+};
+const maxScores = { '1-1':2,'1-2':4,'2-1':2,'2-2':4,'3-1':2,'3-2':4 };
+
+// ══════════════════════════════════════════
+//  HIGHLIGHTER — resets per question switch
+// ══════════════════════════════════════════
+let activeColor = null;
+let currentPassage = 1;
+
+function setColor(c) {
+  activeColor = activeColor === c ? null : c;
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+  if (activeColor) {
+    const id = c === 'erase' ? 'sw-erase' : 'sw-' + c;
+    document.getElementById(id).classList.add('active');
+  }
+}
+
+function clearHighlights(passageNum) {
+  const el = document.getElementById('passage-text-' + passageNum);
+  if (!el) return;
+  el.querySelectorAll('span[class^="hl-"]').forEach(sp => {
+    sp.replaceWith(document.createTextNode(sp.textContent));
+  });
+  // Reset color tool
+  activeColor = null;
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+}
+
+// Attach highlight listener to each passage
+[1,2,3].forEach(pn => {
+  const el = document.getElementById('passage-text-' + pn);
+  el.addEventListener('mouseup', function() {
+    if (!activeColor) return;
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return;
+    const range = sel.getRangeAt(0);
+    if (!this.contains(range.commonAncestorContainer)) return;
+    if (activeColor === 'erase') {
+      this.querySelectorAll('span[class^="hl-"]').forEach(sp => {
+        if (sel.containsNode(sp, true)) sp.replaceWith(document.createTextNode(sp.textContent));
+      });
+      sel.removeAllRanges(); return;
+    }
+    try {
+      const span = document.createElement('span');
+      span.className = 'hl-' + activeColor;
+      range.surroundContents(span);
+      sel.removeAllRanges();
+    } catch(e) { sel.removeAllRanges(); }
+  });
+});
+
+// ══════════════════════════════════════════
+//  PASSAGE SWITCHING
+// ══════════════════════════════════════════
+function switchPassage(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById('pset-' + i).classList.remove('active');
+    document.getElementById('qset-' + i).classList.remove('active');
+    document.getElementById('ptab-' + i).classList.remove('active');
+  });
+  document.getElementById('pset-' + n).classList.add('active');
+  document.getElementById('qset-' + n).classList.add('active');
+  document.getElementById('ptab-' + n).classList.add('active');
+  currentPassage = n;
+  // Reset to Q1 of new passage
+  showQ(String(n), 1);
+  // Clear all highlights on passage switch for clean slate
+  clearHighlights(n);
+}
+
+// ══════════════════════════════════════════
+//  QUESTION TABS — clears highlights on switch
+// ══════════════════════════════════════════
+function showQ(p, q) {
+  [1,2].forEach(i => {
+    document.getElementById('card-' + p + '-' + i).classList.remove('active');
+    document.getElementById('tab-' + p + '-' + i).classList.remove('active');
+    const dot = document.getElementById('dot-' + p + '-' + i);
+    if (!dot.classList.contains('done-full') && !dot.classList.contains('done-partial') && !dot.classList.contains('done-low')) {
+      dot.classList.remove('current');
+    }
+  });
+  document.getElementById('card-' + p + '-' + q).classList.add('active');
+  document.getElementById('tab-' + p + '-' + q).classList.add('active');
+  const dot = document.getElementById('dot-' + p + '-' + q);
+  if (!dot.classList.contains('done-full') && !dot.classList.contains('done-partial') && !dot.classList.contains('done-low')) {
+    dot.classList.add('current');
+  }
+  // ✨ RESET HIGHLIGHTS when switching questions
+  clearHighlights(parseInt(p));
+}
+
+// ══════════════════════════════════════════
+//  UTILITIES
+// ══════════════════════════════════════════
+function countChars(id, ccId) {
+  const len = document.getElementById(id).value.length;
+  document.getElementById(ccId).textContent = len + ' character' + (len !== 1 ? 's' : '');
+}
+function toggleHint(key) {
+  const h = document.getElementById('hint-' + key);
+  h.style.display = h.style.display === 'none' ? 'block' : 'none';
+}
+function hasEvidence(text) {
+  const l = text.toLowerCase();
+  return ['says','states','text says','in the text','according','"','the author','story says','paragraph','when it says','example','shows','evidence','quote'].some(s => l.includes(s));
+}
+function hasKeywords(text, kws) {
+  const l = text.toLowerCase();
+  return kws.some(k => l.includes(k));
+}
+function wc(text) { return text.trim().split(/\s+/).filter(w=>w.length>0).length; }
+
+// ══════════════════════════════════════════
+//  SCORING
+// ══════════════════════════════════════════
+function scoreQ(p, q) {
+  const key = p + '-' + q;
+  let score = 0, fb = '';
+
+  if (p === '1' && q === 1) {
+    const r = document.getElementById('r-1-1').value.trim();
+    const ansOk = hasKeywords(r, ['journal','sketch','record','decided','special','help','write','writing','document','action','response']);
+    const evOk = hasEvidence(r);
+    score = wc(r)<12 ? 0 : (ansOk&&evOk)?2:(ansOk||evOk)?1:0;
+    fb = buildSCRFeedback(score, ansOk, evOk,
+      'Make sure you say HOW Maya responds. Look at paragraph 4 — what does she START doing?',
+      'Copy a sentence from paragraph 4 that shows Maya taking action. Use: "In the text it says, \'...\'"');
+
+  } else if (p === '1' && q === 2) {
+    const a = document.getElementById('r-1-2a').value.trim();
+    const b = document.getElementById('r-1-2b').value.trim();
+    const c = document.getElementById('r-1-2c').value.trim();
+    score = buildECRScore(a, b, c, ['theme','message','lesson','memory','memories','love','loss','honor','preserve','beginning','change','purpose']);
+    fb = buildECRFeedback(score, a, b, c);
+
+  } else if (p === '2' && q === 1) {
+    const r = document.getElementById('r-2-1').value.trim();
+    const ansOk = hasKeywords(r, ['question','why','survive','drought','mango','childhood','watch','garden','motivated','driven','passion','grow','seed','problem','food']);
+    const evOk = hasEvidence(r);
+    score = wc(r)<12 ? 0 : (ansOk&&evOk)?2:(ansOk||evOk)?1:0;
+    fb = buildSCRFeedback(score, ansOk, evOk,
+      'What drove Dr. Osei? Look at paragraph 3 for the question she kept asking herself — that IS her motivation.',
+      'Use her own words or actions from paragraph 3 or 5 as your evidence.');
+
+  } else if (p === '2' && q === 2) {
+    const a = document.getElementById('r-2-2a').value.trim();
+    const b = document.getElementById('r-2-2b').value.trim();
+    const c = document.getElementById('r-2-2c').value.trim();
+    score = buildECRScore(a, b, c, ['connect','childhood','mango','seed','rooftop','scientist','research','survive','possible','impossible','small','beginning','start','laboratory','pot','grow']);
+    fb = buildECRFeedback(score, a, b, c);
+
+  } else if (p === '3' && q === 1) {
+    const r = document.getElementById('r-3-1').value.trim();
+    const ansOk = hasKeywords(r, ['farrow','teacher','said','told','words','note','song','mess','mistake','courage','willing','try','advice','listen','sat','quiet','musician']);
+    const evOk = hasEvidence(r);
+    score = wc(r)<12 ? 0 : (ansOk&&evOk)?2:(ansOk||evOk)?1:0;
+    fb = buildSCRFeedback(score, ansOk, evOk,
+      'Focus on what Ms. Farrow specifically says to Theo in paragraph 3. Her words ARE the help — quote them!',
+      'Copy Ms. Farrow\'s exact words from paragraph 3. Then explain how they helped Theo change.');
+
+  } else if (p === '3' && q === 2) {
+    const a = document.getElementById('r-3-2a').value.trim();
+    const b = document.getElementById('r-3-2b').value.trim();
+    const c = document.getElementById('r-3-2c').value.trim();
+    score = buildECRScore(a, b, c, ['change','afraid','fear','begin','end','refuse','open','play','played','scared','confident','courage','brave','scary','note','bow','concert']);
+    fb = buildECRFeedback(score, a, b, c);
+  }
+
+  // Store score
+  scores[key] = score;
+
+  // Update UI
+  const box = document.getElementById('fb-' + p + '-' + q);
+  const maxPts = maxScores[key];
+  const cls = score === maxPts ? 'score-full' : score >= maxPts/2 ? 'score-partial' : 'score-low';
+  box.className = 'feedback-box ' + cls;
+  box.innerHTML = fb;
+  box.style.display = 'block';
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  // Update progress dot
+  const dot = document.getElementById('dot-' + p + '-' + q);
+  dot.classList.remove('current','done-full','done-partial','done-low');
+  dot.classList.add(cls);
+  dot.innerHTML = `<span>${score}/${maxPts}</span>`;
+}
+
+function buildSCRFeedback(score, ansOk, evOk, ansHint, evHint) {
+  if (score === 2) return `<span class="score-pill">✅ 2 Points — Strong Answer!</span><p>You answered the question AND included text evidence. That's a full 2-point SCR!</p>`;
+  if (score === 1) {
+    let tips = `<span class="score-pill">⚠️ 1 Point — Almost There!</span><ul>`;
+    if (!ansOk) tips += `<li>🔍 <strong>Answer the question more clearly:</strong> ${ansHint}</li>`;
+    if (!evOk) tips += `<li>📖 <strong>Add text evidence:</strong> ${evHint}</li>`;
+    tips += `</ul><p style="margin-top:7px;">✏️ Revise and try again!</p>`;
+    return tips;
+  }
+  return `<span class="score-pill">❌ 0 Points — Let's Build This Together!</span>
+    <ul>
+      <li>📌 <strong>Step 1:</strong> Re-read the passage and find WHERE the answer is.</li>
+      <li>📌 <strong>Step 2:</strong> Write your answer in your own words.</li>
+      <li>📌 <strong>Step 3:</strong> Copy a sentence from the text that proves it. Use: "In the text it says, '...'"</li>
+      <li>📌 Use the <strong>Sentence Frame Helper</strong> above if you need help getting started!</li>
+    </ul>`;
+}
+
+function buildECRScore(a, b, c, keywords) {
+  const total = a.length + b.length + c.length;
+  const hasTopic = hasKeywords(a+b+c, keywords);
+  const ev1 = hasEvidence(b);
+  const ev2 = hasEvidence(c);
+  const explained = b.length > 40 && c.length > 40;
+  if (total < 40) return 0;
+  if (hasTopic && ev1 && ev2 && explained) return 4;
+  if (hasTopic && (ev1 || ev2) && explained) return 3;
+  if (hasTopic && (ev1 || ev2)) return 2;
+  return 1;
+}
+
+function buildECRFeedback(score) {
+  if (score === 4) return `<span class="score-pill">🌟 4 Points — Outstanding ECR!</span><p>You stated a clear idea, used two pieces of evidence from different parts of the text, and explained both connections. Full credit!</p>`;
+  if (score === 3) return `<span class="score-pill">⭐ 3 Points — Very Strong!</span><ul><li>You have a clear main idea and evidence. Strengthen your <strong>explanations</strong> — don't just copy evidence, explain WHY it connects.</li><li>Make sure you explained BOTH pieces of evidence.</li></ul>`;
+  if (score === 2) return `<span class="score-pill">⚠️ 2 Points — Keep Going!</span><ul><li>🎯 Make sure your main idea is clearly stated in Part 1.</li><li>🔵 Part 2 needs a sentence from the text AND an explanation.</li><li>🟢 Part 3 also needs a sentence from a DIFFERENT part of the text AND an explanation.</li></ul>`;
+  return `<span class="score-pill">❌ 1 Point — Let's Rebuild!</span>
+    <ul>
+      <li>📌 <strong>Part 1:</strong> State your main idea clearly (theme, connection, or change).</li>
+      <li>📌 <strong>Part 2:</strong> Find a sentence from the FIRST HALF of the text and explain how it connects.</li>
+      <li>📌 <strong>Part 3:</strong> Find a sentence from the SECOND HALF of the text and explain how it connects.</li>
+      <li>📌 Use the <strong>Sentence Frame Helper</strong> to structure each part!</li>
+    </ul>`;
+}
+
+// ══════════════════════════════════════════
+//  RESET
+// ══════════════════════════════════════════
+const respIds = {
+  '1-1': ['r-1-1'], '1-2': ['r-1-2a','r-1-2b','r-1-2c'],
+  '2-1': ['r-2-1'], '2-2': ['r-2-2a','r-2-2b','r-2-2c'],
+  '3-1': ['r-3-1'], '3-2': ['r-3-2a','r-3-2b','r-3-2c']
+};
+const ccIds = {
+  '1-1': ['cc-1-1'], '1-2': ['cc-1-2a','cc-1-2b','cc-1-2c'],
+  '2-1': ['cc-2-1'], '2-2': ['cc-2-2a','cc-2-2b','cc-2-2c'],
+  '3-1': ['cc-3-1'], '3-2': ['cc-3-2a','cc-3-2b','cc-3-2c']
+};
+
+function resetQ(p, q) {
+  const key = p + '-' + q;
+  respIds[key].forEach(id => { document.getElementById(id).value = ''; });
+  ccIds[key].forEach(id => { document.getElementById(id).textContent = '0 characters'; });
+  document.getElementById('fb-' + key).style.display = 'none';
+  scores[key] = null;
+  const dot = document.getElementById('dot-' + p + '-' + q);
+  dot.classList.remove('done-full','done-partial','done-low');
+  dot.classList.add('current');
+  dot.innerHTML = `<span>Q${q}</span><span class="dot-label">${q===1?'SCR':'ECR'}</span>`;
+  clearHighlights(parseInt(p));
+}
+
+// ══════════════════════════════════════════
+//  GRADEBOOK SUBMISSION
+// ══════════════════════════════════════════
+const GRADEBOOK_URL = 'https://script.google.com/macros/s/AKfycbzXZ_5mtGxj7VUYB5zWcGqX3YMNnphIFX9i2lLaozRma7QvdybZf_r4AIsy5fQyQpvD/exec';
+
+function openSubmitModal() {
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('submitSuccess').style.display = 'none';
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+function getResp(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+async function submitToSheets() {
+  const cls = document.getElementById('classSelect').value;
+  const name = document.getElementById('studentName').value;
+  if (!cls) { alert('Please select your class first!'); closeModal(); return; }
+  if (!name) { alert('Please select your name!'); closeModal(); return; }
+  const url = GRADEBOOK_URL;
+
+  const totalPossible = 18;
+  const totalEarned = Object.values(scores).reduce((sum, s) => sum + (s || 0), 0);
+  const pct = Math.round((totalEarned / totalPossible) * 100);
+
+  const payload = {
+    student: name,
+    homeroom: cls,
+    date: new Date().toLocaleDateString(),
+    time: new Date().toLocaleTimeString(),
+    scores: {
+      p1_q1_scr: scores['1-1'], p1_q2_ecr: scores['1-2'],
+      p2_q1_scr: scores['2-1'], p2_q2_ecr: scores['2-2'],
+      p3_q1_scr: scores['3-1'], p3_q2_ecr: scores['3-2'],
+      total: totalEarned, possible: totalPossible, percent: pct
+    },
+    responses: {
+      p1_q1: getResp('r-1-1'),
+      p1_q2_theme: getResp('r-1-2a'), p1_q2_ev1: getResp('r-1-2b'), p1_q2_ev2: getResp('r-1-2c'),
+      p2_q1: getResp('r-2-1'),
+      p2_q2_main: getResp('r-2-2a'), p2_q2_ev1: getResp('r-2-2b'), p2_q2_ev2: getResp('r-2-2c'),
+      p3_q1: getResp('r-3-1'),
+      p3_q2_begin: getResp('r-3-2a'), p3_q2_end: getResp('r-3-2b'), p3_q2_change: getResp('r-3-2c')
+    }
+  };
+
+  try {
+    await fetch(url, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    document.getElementById('submitSuccess').style.display = 'block';
+  } catch(e) {
+    document.getElementById('submitSuccess').innerHTML = '⚠️ Could not connect. Ask your teacher to check the URL.';
+    document.getElementById('submitSuccess').style.display = 'block';
+  }
+}
+</script>
+
+<!-- 
+=================================================================
+  TEACHER SETUP — GOOGLE SHEETS GRADEBOOK (One-Time, ~5 min)
+=================================================================
+
+STEP 1: Go to sheets.google.com → create a new sheet → name it "SCR ECR Gradebook"
+STEP 2: Click Extensions → Apps Script
+STEP 3: Delete all existing code and paste EVERYTHING below the dashed line
+STEP 4: Click Save (disk icon), then Deploy → New Deployment
+        → Type: Web App
+        → Execute as: Me
+        → Who has access: Anyone
+        → Click Deploy → Copy the Web App URL
+STEP 5: You only need to share the URL with students ONCE.
+        They paste it into the "Submit to Gradebook" modal.
+
+Your Google Sheet will have TWO tabs, one per homeroom class:
+  • "Claudio" tab  — sorted A–Z by student last name
+  • "Chavez" tab   — sorted A–Z by student last name
+
+Each row contains: Student Name | Date | Time | P1 SCR | P1 ECR |
+P2 SCR | P2 ECR | P3 SCR | P3 ECR | Total | Possible | % |
+and all written responses.
+
+=================================================================
+APPS SCRIPT CODE — paste into Apps Script editor:
+=================================================================
+
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var cls = data.homeroom || 'Unknown';
+
+    var headers = [
+      'Student Name','Homeroom','Date','Time',
+      'P1 SCR (0-2)','P1 ECR (0-4)',
+      'P2 SCR (0-2)','P2 ECR (0-4)',
+      'P3 SCR (0-2)','P3 ECR (0-4)',
+      'Total Earned','Total Possible','Percent %',
+      'P1 Q1 SCR Response',
+      'P1 Q2 Theme','P1 Q2 Evidence 1','P1 Q2 Evidence 2',
+      'P2 Q1 SCR Response',
+      'P2 Q2 Main Idea','P2 Q2 Evidence 1','P2 Q2 Evidence 2',
+      'P3 Q1 SCR Response',
+      'P3 Q2 Beginning','P3 Q2 End','P3 Q2 Change Explanation'
+    ];
+
+    // Get or create class tab
+    var sheet = ss.getSheetByName(cls);
+    if (!sheet) {
+      sheet = ss.insertSheet(cls);
+      sheet.appendRow(headers);
+      sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold').setBackground('#7B2FBE').setFontColor('white');
+      sheet.setFrozenRows(1);
+    }
+
+    var r = data.responses;
+    var newRow = [
+      data.student, cls, data.date, data.time,
+      data.scores.p1_q1_scr, data.scores.p1_q2_ecr,
+      data.scores.p2_q1_scr, data.scores.p2_q2_ecr,
+      data.scores.p3_q1_scr, data.scores.p3_q2_ecr,
+      data.scores.total, data.scores.possible, data.scores.percent + '%',
+      r.p1_q1,
+      r.p1_q2_theme, r.p1_q2_ev1, r.p1_q2_ev2,
+      r.p2_q1,
+      r.p2_q2_main, r.p2_q2_ev1, r.p2_q2_ev2,
+      r.p3_q1,
+      r.p3_q2_begin, r.p3_q2_end, r.p3_q2_change
+    ];
+
+    sheet.appendRow(newRow);
+
+    // Sort A-Z by student name (column 1), keeping header row frozen
+    var lastRow = sheet.getLastRow();
+    if (lastRow > 2) {
+      sheet.getRange(2, 1, lastRow - 1, headers.length).sort({ column: 1, ascending: true });
+    }
+
+    return ContentService.createTextOutput('OK');
+  } catch(err) {
+    return ContentService.createTextOutput('Error: ' + err.message);
+  }
+}
+
+=================================================================
+END OF APPS SCRIPT CODE
+=================================================================
+-->
+
+
+</body>
+</html>
